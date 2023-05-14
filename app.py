@@ -6,6 +6,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///tasks.db"
 # app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 with app.app_context():
     db = SQLAlchemy(app)
+    
 
 class Tasks(db.Model):
     sno = db.Column(db.Integer, primary_key=True)
@@ -13,10 +14,11 @@ class Tasks(db.Model):
     desc = db.Column(db.String(500), nullable=False)
     date_created = db.Column(db.DateTime, default=datetime.now())
 
-    def __repr__(self) :
+    def __repr__(self):
         return f"{self.sno} - {self.task_name}"
+   
 
-@app.route('/', methods=['GET','POST'])
+@app.route('/', methods=['GET', 'POST'])
 def hello_world():
     if request.method == 'POST':
         print(request.form['taskname'])
@@ -24,9 +26,11 @@ def hello_world():
         db.session.add(task)
         db.session.commit()
     allTasks = Tasks.query.all()
-        # print(allTasks)
-    return render_template('index.html', allTasks = allTasks)
-        # return 'Hello World!'
+    # print(allTasks)
+    return render_template('index.html', allTasks=allTasks)
+    # return 'Hello World!'
+
+
 @app.route('/delete/<int:sno>')
 def delete(sno):
     delTasks = Tasks.query.filter_by(sno=sno).first()
@@ -35,7 +39,8 @@ def delete(sno):
     # print(allTasks)
     return redirect("/")
 
-@app.route('/update/<int:sno>', methods=['GET','POST'])
+
+@app.route('/update/<int:sno>', methods=['GET', 'POST'])
 def update(sno):
     if request.method == 'POST':
         updtTasks = Tasks.query.filter_by(sno=sno).first()
@@ -46,8 +51,8 @@ def update(sno):
         db.session.commit()
         return redirect("/")
     updtTasks = Tasks.query.filter_by(sno=sno).first()
-    return render_template('update.html', updtTasks = updtTasks)
-    
+    return render_template('update.html', updtTasks=updtTasks)
 
-if __name__=="__main__":
+
+if __name__ == "__main__":
     app.run(debug=True)
